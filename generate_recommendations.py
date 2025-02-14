@@ -1,14 +1,11 @@
-# generate_recommendations.py
 import os
 import numpy as np
 import pandas as pd
 from dotenv import load_dotenv
 from tensorflow.keras.models import load_model
 import logging
+from typing import List, Tuple, Dict
 from sklearn.preprocessing import MultiLabelBinarizer
-
-# Import functions from preprocessing.py
-from preprocessing import load_data, preprocess_data, split_data, extract_features_labels
 
 # Load environment variables
 load_dotenv()
@@ -18,8 +15,78 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
-def get_recent_movies_ratings(movies):
-    """Ask the user to input recently watched movies and their ratings."""
+def load_data(ratings_path: str, movies_path: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
+    """
+    Load the MovieLens dataset.
+
+    Args:
+        ratings_path (str): Path to the ratings CSV file.
+        movies_path (str): Path to the movies CSV file.
+
+    Returns:
+        Tuple[pd.DataFrame, pd.DataFrame]: Ratings and movies DataFrames.
+    """
+    if not os.path.exists(ratings_path):
+        raise FileNotFoundError(f"Ratings file not found: {ratings_path}")
+    if not os.path.exists(movies_path):
+        raise FileNotFoundError(f"Movies file not found: {movies_path}")
+
+    ratings = pd.read_csv(ratings_path)
+    movies = pd.read_csv(movies_path)
+    return ratings, movies
+
+
+def preprocess_data(ratings: pd.DataFrame, movies: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[int, int], Dict[int, int], List[str], pd.DataFrame]:
+    """
+    Preprocess the dataset by mapping user and movie IDs to indices and adding genres.
+
+    Args:
+        ratings (pd.DataFrame): Ratings DataFrame.
+        movies (pd.DataFrame): Movies DataFrame.
+
+    Returns:
+        Tuple[pd.DataFrame, Dict[int, int], Dict[int, int], List[str], pd.DataFrame]:
+            - Processed ratings DataFrame with genres.
+            - User ID to index mapping.
+            - Movie ID to index mapping.
+            - List of genre columns.
+            - Movies DataFrame with genre features.
+    """
+    # Map user and movie IDs to indices
+    user_ids = ratings['userId'].unique()
+    movie_ids = ratings['movieId'].unique()
+
+    user_id_map = {id: i for i, id in enumerate(user_ids)}
+    movie_id_map = {id: i for i, id in enumerate(movie_ids)}
+
+    ratings['user_idx'] = ratings['userId'].map(user_id_map)
+    ratings['movie_idx'] = ratings['movieId'].map(movie_id_map)
+
+    # Preprocess genres
+    movies['genres'] = movies['genres'].str.split('|')
+    mlb = MultiLabelBinarizer()
+    genre_features = pd.DataFrame(mlb.fit_transform(movies['genres']), columns=mlb.classes_)
+    genre_features['movieId'] = movies['movieId']
+
+    # Merge genre features with movies
+    movies_with_genres = movies.merge(genre_features, on='movieId', how='left')
+
+    # Merge genre features with ratings
+    ratings_with_genres = ratings.merge(genre_features, on='movieId', how='left')
+
+    return ratings_with_genres, user_id_map, movie_id_map, mlb.classes_, movies_with_genres
+
+
+def get_recent_movies_ratings(movies: pd.DataFrame) -> Tuple[List[int], List[float]]:
+    """
+    Ask the user to input recently watched movies and their ratings.
+
+    Args:
+        movies (pd.DataFrame): DataFrame containing movie information.
+
+    Returns:
+        Tuple[List[int], List[float]]: List of movie IDs and corresponding ratings.
+    """
     recent_movies = []
     recent_ratings = []
     print("\nSince you're a new user, please help us understand your preferences.")
@@ -29,7 +96,11 @@ def get_recent_movies_ratings(movies):
     while True:
         movie_name = input("Enter a movie name: ").strip()
         if not movie_name:
-            break
+            if not recent_movies:
+                print("Please enter at least one movie.")
+                continue
+            else:
+                break
         # Find the movie ID from the movies dataset
         movie_match = movies[movies['title'].str.contains(movie_name, case=False, na=False)]
         if movie_match.empty:
@@ -43,15 +114,38 @@ def get_recent_movies_ratings(movies):
             movie_id = int(input("Enter the movieId of the correct movie: "))
         else:
             movie_id = movie_match.iloc[0]['movieId']
-        rating = float(input(f"Rate '{movie_name}' (out of 5): "))
+        while True:
+            try:
+                rating = float(input(f"Rate '{movie_name}' (out of 5): "))
+                if 0 <= rating <= 5:
+                    break
+                else:
+                    print("Rating must be between 0 and 5. Please try again.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
         recent_movies.append(movie_id)
         recent_ratings.append(rating)
 
     return recent_movies, recent_ratings
 
 
-def create_temp_user_profile(model, recent_movies, recent_ratings, movies_with_genres, genre_columns, movie_id_map):
-    """Create a temporary user profile based on recently watched movies and ratings."""
+def create_temp_user_profile(model, recent_movies: List[int], recent_ratings: List[float],
+                             movies_with_genres: pd.DataFrame, genre_columns: List[str],
+                             movie_id_map: Dict[int, int]) -> np.ndarray:
+    """
+    Create a temporary user profile based on recently watched movies and ratings.
+
+    Args:
+        model: The trained GMF + MLP model.
+        recent_movies (List[int]): List of recently watched movie IDs.
+        recent_ratings (List[float]): List of corresponding ratings.
+        movies_with_genres (pd.DataFrame): DataFrame containing movie information with genres.
+        genre_columns (List[str]): List of genre columns.
+        movie_id_map (Dict[int, int]): Mapping of movie IDs to indices.
+
+    Returns:
+        np.ndarray: Temporary user embedding.
+    """
     # Get genre features for the recently watched movies
     recent_movie_indices = [movie_id_map[movie_id] for movie_id in recent_movies]
     recent_genre_features = movies_with_genres[movies_with_genres['movieId'].isin(recent_movies)][genre_columns].values
@@ -74,9 +168,24 @@ def create_temp_user_profile(model, recent_movies, recent_ratings, movies_with_g
     return user_embedding
 
 
-def generate_top_recommendations(model, user_embedding, movie_id_map, movies_with_genres, genre_columns, recent_movies,
-                                 top_k=10):
-    """Generate top-k movie recommendations for a user."""
+def generate_top_recommendations(model, user_embedding: np.ndarray, movie_id_map: Dict[int, int],
+                                 movies_with_genres: pd.DataFrame, genre_columns: List[str],
+                                 recent_movies: List[int], top_k: int = 10) -> pd.DataFrame:
+    """
+    Generate top-k movie recommendations for a user.
+
+    Args:
+        model: The trained GMF + MLP model.
+        user_embedding (np.ndarray): Temporary user embedding.
+        movie_id_map (Dict[int, int]): Mapping of movie IDs to indices.
+        movies_with_genres (pd.DataFrame): DataFrame containing movie information with genres.
+        genre_columns (List[str]): List of genre columns.
+        recent_movies (List[int]): List of recently watched movie IDs.
+        top_k (int): Number of recommendations to generate.
+
+    Returns:
+        pd.DataFrame: DataFrame containing top-k recommendations.
+    """
     # Get all movies and their genre features
     movie_ids = movies_with_genres['movieId'].unique()
     movie_indices = []

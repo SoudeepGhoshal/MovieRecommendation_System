@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="85a1a6ef-384f-40e2-bf1c-f5a26daf5369" name="Changes" comment="preprocess_data() now returns genre features with movies">
+    <list default="true" id="85a1a6ef-384f-40e2-bf1c-f5a26daf5369" name="Changes" comment="Fixed generate_recommendations.py">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/generate_recommendations.py" beforeDir="false" afterPath="$PROJECT_DIR$/generate_recommendations.py" afterDir="false" />
     </list>
@@ -102,7 +102,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739557730985</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Fixed generate_recommendations.py">
+      <option name="closed" value="true" />
+      <created>1739558319983</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1739558319983</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -120,6 +128,7 @@
     <MESSAGE value="Minor fixes to .env file and subsequent changes" />
     <MESSAGE value="Added LICENCE.txt" />
     <MESSAGE value="preprocess_data() now returns genre features with movies" />
-    <option name="LAST_COMMIT_MESSAGE" value="preprocess_data() now returns genre features with movies" />
+    <MESSAGE value="Fixed generate_recommendations.py" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed generate_recommendations.py" />
   </component>
 </project>
