@@ -1,12 +1,15 @@
 import json
 import os
 import logging
+from typing import List
 from dotenv import load_dotenv
-from preprocessing import load_data, split_data, preprocess_data, extract_features_labels
+import numpy as np
+from keras.src.callbacks import History
 from tensorflow.keras.layers import Input, Embedding, Flatten, Concatenate, Dense, Dropout, Multiply
 from tensorflow.keras.models import Model
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping
-from tensorflow.keras.utils import plot_model  # Import plot_model
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, TensorBoard
+from tensorflow.keras.utils import plot_model
+from preprocessing import load_data, split_data, preprocess_data, extract_features_labels
 
 # Load environment variables
 load_dotenv()
@@ -23,9 +26,22 @@ EPOCHS = int(os.getenv('EPOCHS', 10))
 BATCH_SIZE = int(os.getenv('BATCH_SIZE', 64))
 
 
-def build_model(num_users, num_movies, num_genres, embedding_size=EMBEDDING_SIZE, mlp_hidden_units=MLP_HIDDEN_UNITS,
-                dropout_rate=DROPOUT_RATE):
-    """Build the GMF + MLP hybrid model."""
+def build_model(num_users: int, num_movies: int, num_genres: int, embedding_size: int = EMBEDDING_SIZE,
+                mlp_hidden_units: List[int] = MLP_HIDDEN_UNITS, dropout_rate: float = DROPOUT_RATE) -> Model:
+    """
+    Build the GMF + MLP hybrid model.
+
+    Args:
+        num_users (int): Number of unique users.
+        num_movies (int): Number of unique movies.
+        num_genres (int): Number of unique genres.
+        embedding_size (int): Size of the embedding layer.
+        mlp_hidden_units (List[int]): List of hidden units for the MLP branch.
+        dropout_rate (float): Dropout rate for regularization.
+
+    Returns:
+        Model: The compiled GMF + MLP model.
+    """
     # Input layers
     user_input = Input(shape=(1,), name='user_input')
     movie_input = Input(shape=(1,), name='movie_input')
@@ -61,7 +77,7 @@ def build_model(num_users, num_movies, num_genres, embedding_size=EMBEDDING_SIZE
     model = Model(inputs=[user_input, movie_input, genre_input], outputs=output)
 
     # Compile the model
-    model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae'])
+    model.compile(optimizer='adam', loss='mean_squared_error', metrics=['mae', 'mse'])
 
     # Print model summary
     model.summary()
@@ -73,10 +89,30 @@ def build_model(num_users, num_movies, num_genres, embedding_size=EMBEDDING_SIZE
     return model
 
 
-def train_model(model, train_users, train_movies, train_genres, train_ratings, test_users, test_movies, test_genres,
-                test_ratings, epochs=EPOCHS, batch_size=BATCH_SIZE):
-    """Train the GMF + MLP model with callbacks."""
+def train_model(model: Model, train_users: np.ndarray, train_movies: np.ndarray, train_genres: np.ndarray,
+                train_ratings: np.ndarray, test_users: np.ndarray, test_movies: np.ndarray, test_genres: np.ndarray,
+                test_ratings: np.ndarray, epochs: int = EPOCHS, batch_size: int = BATCH_SIZE) -> History:
+    """
+    Train the GMF + MLP model with callbacks.
+
+    Args:
+        model (Model): The GMF + MLP model.
+        train_users (np.ndarray): Training user indices.
+        train_movies (np.ndarray): Training movie indices.
+        train_genres (np.ndarray): Training genre features.
+        train_ratings (np.ndarray): Training ratings.
+        test_users (np.ndarray): Testing user indices.
+        test_movies (np.ndarray): Testing movie indices.
+        test_genres (np.ndarray): Testing genre features.
+        test_ratings (np.ndarray): Testing ratings.
+        epochs (int): Number of training epochs.
+        batch_size (int): Batch size for training.
+
+    Returns:
+        History: Training history.
+    """
     # Define callbacks
+    tensorboard = TensorBoard(log_dir='./logs', histogram_freq=1)
     checkpoint = ModelCheckpoint(
         os.getenv('MODEL_PATH'),
         monitor='val_loss',
@@ -90,6 +126,13 @@ def train_model(model, train_users, train_movies, train_genres, train_ratings, t
         restore_best_weights=True,
         verbose=1
     )
+    reduce_lr = ReduceLROnPlateau(
+        monitor='val_loss',
+        factor=0.2,
+        patience=2,
+        min_lr=1e-5,
+        verbose=1
+    )
 
     # Train the model
     history = model.fit(
@@ -98,23 +141,25 @@ def train_model(model, train_users, train_movies, train_genres, train_ratings, t
         batch_size=batch_size,
         epochs=epochs,
         validation_data=([test_users, test_movies, test_genres], test_ratings),
-        callbacks=[checkpoint, early_stopping]
+        callbacks=[checkpoint, early_stopping, reduce_lr, tensorboard]
     )
     return history
 
 
-def save_model_hist(model, hist):
+def save_model_hist(model: Model, hist: History) -> None:
     """Save the trained model and training history to disk."""
     try:
         # Save the model
         model.save(os.getenv('MODEL_PATH'))
+        logger.info(f"Model saved to {os.getenv('MODEL_PATH')}")
 
         # Save the training history
         with open(os.getenv('TRAINING_HISTORY_PATH'), 'w') as f:
             json.dump(hist.history, f)
-        logger.info(f"Model and training history saved...")
+        logger.info(f"Training history saved to {os.getenv('TRAINING_HISTORY_PATH')}")
     except Exception as e:
         logger.error(f"Error saving model and history: {e}")
+        raise
 
 
 def main():

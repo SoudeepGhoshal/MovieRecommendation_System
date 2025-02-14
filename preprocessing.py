@@ -1,11 +1,12 @@
-# preprocessing.py
 import os
 import logging
 import pickle
+import numpy as np
+from typing import Dict, List, Tuple
 from dotenv import load_dotenv
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import MultiLabelBinarizer
+from sklearn.preprocessing import MultiLabelBinarizer, MinMaxScaler
 
 # Load environment variables
 load_dotenv()
@@ -18,9 +19,11 @@ logger = logging.getLogger(__name__)
 RATINGS_PATH = os.getenv('RATINGS_PATH')
 MOVIES_PATH = os.getenv('MOVIES_PATH')
 PREPROCESSED_DATA_PATH = os.getenv('PREPROCESSED_DATA_PATH')
+TEST_SIZE = float(os.getenv('TEST_SIZE', 0.2))
+RANDOM_STATE = int(os.getenv('RANDOM_STATE', 42))
 
 
-def load_data(ratings_file, movies_file):
+def load_data(ratings_file: str, movies_file: str) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Load the MovieLens dataset."""
     if not os.path.exists(ratings_file):
         raise FileNotFoundError(f"Ratings file not found: {ratings_file}")
@@ -32,7 +35,7 @@ def load_data(ratings_file, movies_file):
     return ratings, movies
 
 
-def validate_data(ratings, movies):
+def validate_data(ratings: pd.DataFrame, movies: pd.DataFrame) -> None:
     """Validate the dataset."""
     if ratings.isnull().any().any():
         raise ValueError("Ratings data contains missing values.")
@@ -44,7 +47,7 @@ def validate_data(ratings, movies):
         raise ValueError("Movies data contains duplicate entries.")
 
 
-def preprocess_data(ratings, movies):
+def preprocess_data(ratings: pd.DataFrame, movies: pd.DataFrame) -> Tuple[pd.DataFrame, Dict[int, int], Dict[int, int], List[str], pd.DataFrame]:
     """Preprocess the dataset by mapping user and movie IDs to indices and adding genres."""
     # Map user and movie IDs to indices
     user_ids = ratings['userId'].unique()
@@ -71,13 +74,13 @@ def preprocess_data(ratings, movies):
     return ratings_with_genres, user_id_map, movie_id_map, mlb.classes_, movies_with_genres
 
 
-def split_data(ratings, test_size=0.2, random_state=42):
+def split_data(ratings: pd.DataFrame, test_size: float = TEST_SIZE, random_state: int = RANDOM_STATE) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """Split the dataset into training and testing sets."""
     train_data, test_data = train_test_split(ratings, test_size=test_size, random_state=random_state)
     return train_data, test_data
 
 
-def extract_features_labels(data, genre_columns):
+def extract_features_labels(data: pd.DataFrame, genre_columns: List[str]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Extract features (user and movie indices, genres) and labels (ratings)."""
     users = data['user_idx'].values
     movies = data['movie_idx'].values
@@ -86,16 +89,25 @@ def extract_features_labels(data, genre_columns):
     return users, movies, genres, ratings
 
 
-def save_preprocessed_data(data, file_path):
+def save_preprocessed_data(data: dict, file_path: str) -> None:
     """Save preprocessed data to a file."""
-    with open(file_path, 'wb') as f:
-        pickle.dump(data, f)
+    try:
+        with open(file_path, 'wb') as f:
+            pickle.dump(data, f)
+        logger.info(f"Preprocessed data saved to {file_path}")
+    except Exception as e:
+        logger.error(f"Failed to save preprocessed data: {e}")
+        raise
 
 
-def load_preprocessed_data(file_path):
+def load_preprocessed_data(file_path: str) -> dict:
     """Load preprocessed data from a file."""
-    with open(file_path, 'rb') as f:
-        return pickle.load(f)
+    try:
+        with open(file_path, 'rb') as f:
+            return pickle.load(f)
+    except Exception as e:
+        logger.error(f"Failed to load preprocessed data: {e}")
+        raise
 
 
 def main():
@@ -108,7 +120,7 @@ def main():
     validate_data(ratings, movies)
 
     # Preprocess data
-    ratings_with_genres, user_id_map, movie_id_map, genre_columns = preprocess_data(ratings, movies)
+    ratings_with_genres, user_id_map, movie_id_map, genre_columns, movies_with_genres = preprocess_data(ratings, movies)
     logger.info('Preprocessed Ratings DataFrame:\n%s', ratings_with_genres.head())
     logger.info('User ID Map:\n%s', user_id_map)
     logger.info('Movie ID Map:\n%s', movie_id_map)
