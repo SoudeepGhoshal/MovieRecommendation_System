@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommendations</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Movie Recommendations</h1>
+        <p>Enter the movies you've recently watched and rate them to get personalized recommendations.</p>
+
+        <!-- Form for user input -->
+        <form id="recommendation-form">
+            <div id="movie-inputs">
+                <div class="movie-input">
+                    <input type="text" class="movie-name" placeholder="Movie Name" required>
+                    <input type="number" class="movie-rating" placeholder="Rating (0-5)" min="0" max="5" step="0.1" required>
+                    <button type="button" class="remove-movie" onclick="removeMovie(this)">Remove</button>
+                </div>
+            </div>
+            <button type="button" onclick="addMovie()">Add Another Movie</button>
+            <button type="submit">Get Recommendations</button>
+        </form>
+
+        <!-- Display recommendations here -->
+        <div id="recommendations">
+            <h2>Your Recommendations</h2>
+            <ul id="recommendation-list"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Movies data passed from the Flask server
+        const moviesData = {{ movies_data | tojson }};
+
+        // Function to get movieId by movieName
+        function getMovieIdByName(movieName) {
+            const movie = moviesData.find(movie => movie.title === movieName);
+            if (!movie) {
+                console.error(`Movie "${movieName}" not found in the dataset.`);
+            }
+            return movie ? movie.movieId : null;
+        }
+
+        // Function to add a new movie input field
+        function addMovie() {
+            const movieInputs = document.getElementById('movie-inputs');
+            const newMovieInput = document.createElement('div');
+            newMovieInput.className = 'movie-input';
+            newMovieInput.innerHTML = `
+                <input type="text" class="movie-name" placeholder="Movie Name" required>
+                <input type="number" class="movie-rating" placeholder="Rating (0-5)" min="0" max="5" step="0.1" required>
+                <button type="button" class="remove-movie" onclick="removeMovie(this)">Remove</button>
+            `;
+            movieInputs.appendChild(newMovieInput);
+        }
+
+        // Function to remove a movie input field
+        function removeMovie(button) {
+            button.parentElement.remove();
+        }
+
+        // Function to handle form submission
+        document.getElementById('recommendation-form').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            // Collect movie data
+            const movieInputs = document.querySelectorAll('.movie-input');
+            const recentMovies = [];
+            movieInputs.forEach(input => {
+                const movieName = input.querySelector('.movie-name').value;
+                const movieRating = parseFloat(input.querySelector('.movie-rating').value);
+                if (movieName && !isNaN(movieRating)) {
+                    // Look up movieId based on movieName
+                    const movieId = getMovieIdByName(movieName);
+                    if (movieId) {
+                        recentMovies.push({ movieId, rating: movieRating });
+                    } else {
+                        alert(`Movie "${movieName}" not found in the dataset. Please try again.`);
+                    }
+                }
+            });
+
+            // Send data to the Flask server
+            try {
+                const response = await fetch('/recommend', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ recent_movies: recentMovies }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch recommendations');
+                }
+
+                const data = await response.json();
+                displayRecommendations(data.recommendations);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to get recommendations. Please try again.');
+            }
+        });
+
+        // Function to display recommendations
+        function displayRecommendations(recommendations) {
+            const recommendationList = document.getElementById('recommendation-list');
+            recommendationList.innerHTML = ''; // Clear previous recommendations
+
+            recommendations.forEach(movie => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <strong>${movie.title}</strong> (Rating: ${movie.predicted_rating.toFixed(2)})<br>
+                    <em>Genres: ${movie.genres}</em>
+                `;
+                recommendationList.appendChild(listItem);
+            });
+        }
+    </script>
+</body>
+</html>
