@@ -120,7 +120,7 @@ def save_model_hist(model, hist):
 def main():
     logger.info("Loading and preprocessing data...")
     ratings, movies = load_data(os.getenv('RATINGS_PATH'), os.getenv('MOVIES_PATH'))
-    ratings_with_genres, user_id_map, movie_id_map, genre_columns = preprocess_data(ratings, movies)
+    ratings_with_genres, user_id_map, movie_id_map, genre_columns, movies_with_genres = preprocess_data(ratings, movies)
     train_data, test_data = split_data(ratings_with_genres)
     train_users, train_movies, train_genres, train_ratings = extract_features_labels(train_data, genre_columns)
     test_users, test_movies, test_genres, test_ratings = extract_features_labels(test_data, genre_columns)

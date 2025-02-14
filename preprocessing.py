@@ -62,9 +62,13 @@ def preprocess_data(ratings, movies):
     genre_features = pd.DataFrame(mlb.fit_transform(movies['genres']), columns=mlb.classes_)
     genre_features['movieId'] = movies['movieId']
 
+    # Merge genre features with movies
+    movies_with_genres = movies.merge(genre_features, on='movieId', how='left')
+
     # Merge genre features with ratings
     ratings_with_genres = ratings.merge(genre_features, on='movieId', how='left')
-    return ratings_with_genres, user_id_map, movie_id_map, mlb.classes_
+
+    return ratings_with_genres, user_id_map, movie_id_map, mlb.classes_, movies_with_genres
 
 
 def split_data(ratings, test_size=0.2, random_state=42):
