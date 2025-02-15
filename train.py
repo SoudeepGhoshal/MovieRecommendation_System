@@ -112,7 +112,7 @@ def train_model(model: Model, train_users: np.ndarray, train_movies: np.ndarray,
         History: Training history.
     """
     # Define callbacks
-    tensorboard = TensorBoard(log_dir='./logs', histogram_freq=1)
+    tensorboard = TensorBoard(log_dir=os.getenv('LOGS_PATH'), histogram_freq=1)
     checkpoint = ModelCheckpoint(
         os.getenv('MODEL_PATH'),
         monitor='val_loss',
