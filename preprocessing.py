@@ -127,13 +127,13 @@ def main():
     logger.info('Genre Columns:\n%s', genre_columns)
 
     # Save preprocessed data
-    preprocessed_data = {
-        'ratings_with_genres': ratings_with_genres,
-        'user_id_map': user_id_map,
-        'movie_id_map': movie_id_map,
-        'genre_columns': genre_columns
-    }
-    save_preprocessed_data(preprocessed_data, PREPROCESSED_DATA_PATH)
+    #preprocessed_data = {
+    #    'ratings_with_genres': ratings_with_genres,
+    #    'user_id_map': user_id_map,
+    #    'movie_id_map': movie_id_map,
+    #    'genre_columns': genre_columns
+    #}
+    #save_preprocessed_data(preprocessed_data, PREPROCESSED_DATA_PATH)
 
     # Split data
     train_data, test_data = split_data(ratings_with_genres)

@@ -5,15 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="85a1a6ef-384f-40e2-bf1c-f5a26daf5369" name="Changes" comment="Edited README.md">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/train/events.out.tfevents.1739563250.SOUDEEP.22524.0.v2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/validation/events.out.tfevents.1739563259.SOUDEEP.22524.1.v2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/movielens-100k/best_model.keras" beforeDir="false" afterPath="$PROJECT_DIR$/model/movielens-100k/best_model.keras" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/movielens-100k/predictions_vs_actual.png.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/movielens-100k/training_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/model/movielens-100k/training_history.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/movielens-100k/training_history_plot.png" beforeDir="false" afterPath="$PROJECT_DIR$/model/movielens-100k/training_history_plot.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/preprocessing.py" beforeDir="false" afterPath="$PROJECT_DIR$/preprocessing.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,19 +43,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python.app.executor&quot;: &quot;Run&quot;,
-    &quot;Python.evaluate.executor&quot;: &quot;Run&quot;,
-    &quot;Python.generate_recommendations.executor&quot;: &quot;Run&quot;,
-    &quot;Python.preprocessing.executor&quot;: &quot;Run&quot;,
-    &quot;Python.test.executor&quot;: &quot;Run&quot;,
-    &quot;Python.train.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python.app.executor": "Run",
+    "Python.evaluate.executor": "Run",
+    "Python.generate_recommendations.executor": "Run",
+    "Python.preprocessing.executor": "Run",
+    "Python.test.executor": "Run",
+    "Python.train.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/soude/OneDrive/Documents/PycharmProjects/MovieRecommendation_System"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\soude\OneDrive\Documents\PycharmProjects\MovieRecommendationSystem\dataset\movielens-100k" />
