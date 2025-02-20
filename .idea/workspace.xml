@@ -4,8 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="85a1a6ef-384f-40e2-bf1c-f5a26daf5369" name="Changes" comment="Added Epoch Logging as a custom callback">
+    <list default="true" id="85a1a6ef-384f-40e2-bf1c-f5a26daf5369" name="Changes" comment="Stores Model compilation summary now">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/movielens-100k/training_logs.txt" beforeDir="false" afterPath="$PROJECT_DIR$/logs/movielens-100k/training_logs.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/movielens-100k/best_model.keras" beforeDir="false" afterPath="$PROJECT_DIR$/model/movielens-100k/best_model.keras" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model/movielens-100k/training_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/model/movielens-100k/training_history.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -168,7 +171,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740056331629</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="Stores Model compilation summary now">
+      <option name="closed" value="true" />
+      <created>1740057896695</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1740057896695</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -194,6 +205,7 @@
     <MESSAGE value="Edited README.md" />
     <MESSAGE value="." />
     <MESSAGE value="Added Epoch Logging as a custom callback" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added Epoch Logging as a custom callback" />
+    <MESSAGE value="Stores Model compilation summary now" />
+    <option name="LAST_COMMIT_MESSAGE" value="Stores Model compilation summary now" />
   </component>
 </project>

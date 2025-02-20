@@ -112,7 +112,7 @@ def build_model(num_users: int, num_movies: int, num_genres: int, embedding_size
 
     # Save model summary to training logs
     log_file = os.path.join(os.getenv('LOGS_PATH'), 'training_logs.txt')
-    with open(log_file, 'w') as f:
+    with open(log_file, 'w', encoding='utf-8') as f:
         f.write("=== Model Summary ===\n")
         f.write(model_summary.getvalue())
         f.write("=====================\n\n")
