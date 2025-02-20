@@ -1,6 +1,8 @@
+import io
 import json
 import os
 import logging
+import sys
 from typing import List
 from dotenv import load_dotenv
 import numpy as np
@@ -101,6 +103,19 @@ def build_model(num_users: int, num_movies: int, num_genres: int, embedding_size
 
     # Print model summary
     model.summary()
+
+    # Capture model summary
+    model_summary = io.StringIO()
+    sys.stdout = model_summary  # Redirect stdout to capture summary
+    model.summary()
+    sys.stdout = sys.__stdout__  # Reset stdout
+
+    # Save model summary to training logs
+    log_file = os.path.join(os.getenv('LOGS_PATH'), 'training_logs.txt')
+    with open(log_file, 'w') as f:
+        f.write("=== Model Summary ===\n")
+        f.write(model_summary.getvalue())
+        f.write("=====================\n\n")
 
     # Save the model architecture as a .png file
     plot_model(model, to_file=os.getenv('MODEL_ARCHITECTURE_PATH'), show_shapes=True, show_layer_names=True)

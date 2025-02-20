@@ -4,18 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="85a1a6ef-384f-40e2-bf1c-f5a26daf5369" name="Changes" comment=".">
-      <change afterPath="$PROJECT_DIR$/logs/movielens-100k/training_logs.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/MovieRecommendationSystem.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/MovieRecommendationSystem.iml" afterDir="false" />
+    <list default="true" id="85a1a6ef-384f-40e2-bf1c-f5a26daf5369" name="Changes" comment="Added Epoch Logging as a custom callback">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/movielens-100k/train/events.out.tfevents.1739611742.SOUDEEP.29220.0.v2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/movielens-100k/train/events.out.tfevents.1739611871.SOUDEEP.14252.0.v2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/movielens-100k/train/events.out.tfevents.1739612126.SOUDEEP.8512.0.v2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/movielens-100k/validation/events.out.tfevents.1739611757.SOUDEEP.29220.1.v2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/movielens-100k/validation/events.out.tfevents.1739611887.SOUDEEP.14252.1.v2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/logs/movielens-100k/validation/events.out.tfevents.1739612143.SOUDEEP.8512.1.v2" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/movielens-100k/best_model.keras" beforeDir="false" afterPath="$PROJECT_DIR$/model/movielens-100k/best_model.keras" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/model/movielens-100k/training_history.json" beforeDir="false" afterPath="$PROJECT_DIR$/model/movielens-100k/training_history.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/train.py" beforeDir="false" afterPath="$PROJECT_DIR$/train.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -170,7 +160,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739791777021</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Added Epoch Logging as a custom callback">
+      <option name="closed" value="true" />
+      <created>1740056331629</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1740056331629</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -195,6 +193,7 @@
     <MESSAGE value="Fixed a typo" />
     <MESSAGE value="Edited README.md" />
     <MESSAGE value="." />
-    <option name="LAST_COMMIT_MESSAGE" value="." />
+    <MESSAGE value="Added Epoch Logging as a custom callback" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Epoch Logging as a custom callback" />
   </component>
 </project>
