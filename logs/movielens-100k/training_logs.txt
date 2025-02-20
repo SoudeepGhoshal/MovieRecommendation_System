@@ -1,0 +1,45 @@
+Epoch 1
+ - loss: 1.1224
+ - mae: 0.8118
+ - mse: 1.1224
+ - val_loss: 0.7831
+ - val_mae: 0.6744
+ - val_mse: 0.7831
+ - learning_rate: 0.0010
+
+Epoch 2
+ - loss: 0.7579
+ - mae: 0.6776
+ - mse: 0.7579
+ - val_loss: 0.7348
+ - val_mae: 0.6565
+ - val_mse: 0.7348
+ - learning_rate: 0.0010
+
+Epoch 3
+ - loss: 0.4801
+ - mae: 0.5346
+ - mse: 0.4801
+ - val_loss: 0.7576
+ - val_mae: 0.6697
+ - val_mse: 0.7576
+ - learning_rate: 0.0010
+
+Epoch 4
+ - loss: 0.3039
+ - mae: 0.4256
+ - mse: 0.3039
+ - val_loss: 0.7836
+ - val_mae: 0.6833
+ - val_mse: 0.7836
+ - learning_rate: 0.0010
+
+Epoch 5
+ - loss: 0.2006
+ - mae: 0.3460
+ - mse: 0.2006
+ - val_loss: 0.7874
+ - val_mae: 0.6853
+ - val_mse: 0.7874
+ - learning_rate: 0.0002
+

@@ -7,7 +7,7 @@ import numpy as np
 from keras.src.callbacks import History
 from tensorflow.keras.layers import Input, Embedding, Flatten, Concatenate, Dense, Dropout, Multiply
 from tensorflow.keras.models import Model
-from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, TensorBoard
+from tensorflow.keras.callbacks import ModelCheckpoint, EarlyStopping, ReduceLROnPlateau, TensorBoard, Callback
 from tensorflow.keras.utils import plot_model
 from preprocessing import load_data, split_data, preprocess_data, extract_features_labels
 
@@ -24,6 +24,26 @@ MLP_HIDDEN_UNITS = list(map(int, os.getenv('MLP_HIDDEN_UNITS', '128,64').split('
 DROPOUT_RATE = float(os.getenv('DROPOUT_RATE', 0.2))
 EPOCHS = int(os.getenv('EPOCHS', 10))
 BATCH_SIZE = int(os.getenv('BATCH_SIZE', 64))
+
+
+# Custom callback to save epoch logs to a text file
+class EpochLogSaver(Callback):
+    def __init__(self, log_file):
+        super(EpochLogSaver, self).__init__()
+        self.log_file = log_file
+
+    def on_epoch_end(self, epoch, logs=None):
+        logs = logs or {}
+        with open(self.log_file, 'a') as f:
+            f.write(f"Epoch {epoch + 1}\n")
+            f.write(f" - loss: {logs.get('loss'):.4f}\n")
+            f.write(f" - mae: {logs.get('mae'):.4f}\n")
+            f.write(f" - mse: {logs.get('mse'):.4f}\n")
+            f.write(f" - val_loss: {logs.get('val_loss'):.4f}\n")
+            f.write(f" - val_mae: {logs.get('val_mae'):.4f}\n")
+            f.write(f" - val_mse: {logs.get('val_mse'):.4f}\n")
+            f.write(f" - learning_rate: {logs.get('learning_rate'):.4f}\n")
+            f.write("\n")
 
 
 def build_model(num_users: int, num_movies: int, num_genres: int, embedding_size: int = EMBEDDING_SIZE,
@@ -141,7 +161,7 @@ def train_model(model: Model, train_users: np.ndarray, train_movies: np.ndarray,
         batch_size=batch_size,
         epochs=epochs,
         validation_data=([test_users, test_movies, test_genres], test_ratings),
-        callbacks=[checkpoint, early_stopping, reduce_lr, tensorboard]
+        callbacks=[checkpoint, early_stopping, reduce_lr, tensorboard, EpochLogSaver(os.getenv('LOGS_PATH')+'/training_logs.txt')]
     )
     return history
 
