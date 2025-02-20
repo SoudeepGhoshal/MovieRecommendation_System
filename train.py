@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 EMBEDDING_SIZE = int(os.getenv('EMBEDDING_SIZE', 50))
 MLP_HIDDEN_UNITS = list(map(int, os.getenv('MLP_HIDDEN_UNITS', '128,64').split(',')))
 DROPOUT_RATE = float(os.getenv('DROPOUT_RATE', 0.2))
-EPOCHS = int(os.getenv('EPOCHS', 10))
+EPOCHS = int(os.getenv('EPOCHS', 50))
 BATCH_SIZE = int(os.getenv('BATCH_SIZE', 64))
 
 
