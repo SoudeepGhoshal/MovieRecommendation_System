@@ -1,3 +1,4 @@
+import pandas as pd
 from flask import Flask, request, jsonify, render_template
 import os
 from dotenv import load_dotenv
@@ -28,6 +29,7 @@ except Exception as e:
 logger.info("Loading and preprocessing data...")
 try:
     ratings, movies = load_data(os.getenv('RATINGS_PATH'), os.getenv('MOVIES_PATH'))
+    links = pd.read_csv(os.getenv('LINKS_PATH'))
     ratings_with_genres, user_id_map, movie_id_map, genre_columns, movies_with_genres = preprocess_data(ratings, movies)
     logger.info("Data loaded and preprocessed successfully.")
 except Exception as e:
@@ -106,7 +108,8 @@ def recommend():
                 "movieId": int(row['movieId']),
                 "title": row['title'],
                 "genres": row['genres'],
-                "predicted_rating": float(row['predicted_rating'])
+                "predicted_rating": float(row['predicted_rating']),
+                "tmdb_link": "https://www.themoviedb.org/movie/" + links.loc[links['movieId'] == int(row['movieId']), 'tmdbId'].astype(str).str[0:-2].values[0]
             })
 
         return jsonify({"recommendations": recommendations})
@@ -120,4 +123,4 @@ def recommend():
 
 if __name__ == '__main__':
     # Run the Flask server
-    app.run(host='0.0.0.0', port=1283)
+    app.run(host='0.0.0.0', port=4375)
