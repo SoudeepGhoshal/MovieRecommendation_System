@@ -5,3 +5,4 @@ tensorflow
 matplotlib
 pydot
 flask
+dotenv
