@@ -130,8 +130,8 @@ MovieRecommendation_System/
      INDEX_PATH = 'index.html'
      ```
 
-4. Download the **MovieLens 100k dataset** and place it in the `dataset/movielens-100k/` directory.
-   [You can use any other version of the MovieLens dataset you want. MovieLens-32M has been added but not used since model is too heavy to be deploy.]
+4. Download the **MovieLens-32M dataset** and place it in the `dataset/movielens-32m/` directory.
+   [You may use any other version of the MovieLens dataset you want. MovieLens-100k has been added and used for deployment as it is a lightweight option.]
 
 ---
 
@@ -188,13 +188,13 @@ These metrics indicate that the model performs well in predicting user ratings f
 
 Below is the architecture of the hybrid GMF-MLP model used in this recommendation system:
 
-![Model Architecture](model/movielens-100k/model_architecture.png)
+![Model Architecture](model/movielens-32m/model_architecture.png)
 
 ### Training History
 
 The training history plot shows the model's loss and validation loss over epochs:
 
-![Training History Plot](model/movielens-100k/training_history_plot.png)
+![Training History Plot](model/movielens-32m/training_history_plot.png)
 
 ---
 
