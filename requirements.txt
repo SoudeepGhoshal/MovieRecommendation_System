@@ -4,3 +4,4 @@ scikit-learn
 tensorflow
 matplotlib
 pydot
+flask
