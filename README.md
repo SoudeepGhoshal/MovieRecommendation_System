@@ -169,7 +169,7 @@ python evaluate.py
 
 ## Deployment
 
-The application is deployed using Render and is available at [movierecommendation-system.onrender.com]([https://movierecommender.streamlit.app](https://movierecommendation-system.onrender.com/)).
+The application is deployed using Render and is available at [movierecommendation-system.onrender.com](https://movierecommendation-system.onrender.com/).
 
 ---
 
