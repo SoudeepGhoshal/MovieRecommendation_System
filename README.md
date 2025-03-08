@@ -179,8 +179,10 @@ The application is deployed using Render and is available at [movierecommendatio
 
 The model's performance is evaluated using metrics such as **Mean Absolute Error (MAE)** and **Root Mean Squared Error (RMSE)**. Below are the evaluation results:
 
-- **Mean Absolute Error (MAE)**: 0.75
-- **Root Mean Squared Error (RMSE)**: 0.95
+- **Test Loss**: 0.6128820180892944
+- **Test Mean Absolute Error (MAE)**: 0.5911314487457275
+- **Test Root Mean Squared Error (RMSE)**: 0.7828662942166503
+- **Test R²**: 0.4531968165906377
 
 These metrics indicate that the model performs well in predicting user ratings for movies.
 
