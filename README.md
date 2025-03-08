@@ -2,7 +2,7 @@
 
 <!--![Movie Recommendation System](https://via.placeholder.com/800x400?text=Movie+Recommendation+System) ->> Replace with an actual image if available -->
 
-A hybrid movie recommendation system that combines **Generalized Matrix Factorization (GMF)** and **Multi-Layer Perceptron (MLP)** to provide personalized movie recommendations. The system is deployed using **Streamlit** and is available at [movierecommender.streamlit.app](https://movierecommender.streamlit.app).
+A hybrid movie recommendation system that combines **Generalized Matrix Factorization (GMF)** and **Multi-Layer Perceptron (MLP)** to provide personalized movie recommendations. The system is deployed using **Render** and is available at [movierecommendation-system.onrender.com](https://movierecommendation-system.onrender.com/).
 
 ---
 
@@ -23,7 +23,7 @@ A hybrid movie recommendation system that combines **Generalized Matrix Factoriz
 
 ## Overview
 
-This project is a movie recommendation system built using a hybrid model that combines GMF and MLP. It uses the **MovieLens 100k dataset** to train the model and provides recommendations based on user input. The system is deployed as a web application using **Streamlit**.
+This project is a movie recommendation system built using a hybrid model that combines GMF and MLP. It uses the **MovieLens dataset** to train the model and provides recommendations based on user input. The system is deployed as a web service using **Render**.
 
 ---
 
@@ -32,7 +32,7 @@ This project is a movie recommendation system built using a hybrid model that co
 - **Hybrid Model**: Combines GMF and MLP for accurate recommendations.
 - **User Input**: Users can input recently watched movies and their ratings.
 - **Personalized Recommendations**: Provides top 10 movie recommendations based on user preferences.
-- **Deployment**: Hosted on Streamlit for easy access.
+- **Deployment**: Hosted on Render for easy access.
 
 ---
 
@@ -41,18 +41,32 @@ This project is a movie recommendation system built using a hybrid model that co
 MovieRecommendation_System/
 │
 ├── dataset/                     # Directory containing the MovieLens 100k dataset
+│   └── movielens-32m/           # Subdirectory for the specific dataset
+│       ├── link.csv             # CSV file containing movie links
+│       ├── movies.csv           # CSV file containing movie details (title, genres, etc.)
+│       ├── ratings.csv          # CSV file containing user ratings for movies
+│       ├── tags.csv             # CSV file containing user-generated tags for movies
+│       ├── README.txt           # Documentation for the dataset
+│
 │   └── movielens-100k/          # Subdirectory for the specific dataset
 │       ├── link.csv             # CSV file containing movie links
 │       ├── movies.csv           # CSV file containing movie details (title, genres, etc.)
 │       ├── ratings.csv          # CSV file containing user ratings for movies
 │       ├── tags.csv             # CSV file containing user-generated tags for movies
 │       ├── README.txt           # Documentation for the dataset
-│       └── preprocessed_data.pkl # Preprocessed data saved as a pickle file
 │
 ├── preprocess.py                # Script for preprocessing the dataset
+│
 ├── train.py                     # Script for training the recommendation model
 │
 ├── model/                       # Directory containing the trained model and related files
+│   └── movielens-32m/          # Subdirectory for the specific dataset's model
+│       ├── best_model.keras     # Trained model saved in Keras format
+│       ├── training_history.json # JSON file containing the training history
+│       ├── model_architecture.png # Image file showing the model architecture
+│       ├── training_history_plot.png # Plot of training and validation loss over epochs
+│       └── predictions_vs_actual.png # Plot comparing predicted vs actual ratings
+│
 │   └── movielens-100k/          # Subdirectory for the specific dataset's model
 │       ├── best_model.keras     # Trained model saved in Keras format
 │       ├── training_history.json # JSON file containing the training history
@@ -61,7 +75,9 @@ MovieRecommendation_System/
 │       └── predictions_vs_actual.png # Plot comparing predicted vs actual ratings
 │
 ├── evaluate.py                  # Script for evaluating the trained model
+│
 ├── generate_recommendations.py  # Script for generating movie recommendations
+│
 ├── app.py                       # Flask server script for hosting the recommendation system
 │
 ├── static/                      # Directory for static files (CSS, JS)
@@ -115,6 +131,7 @@ MovieRecommendation_System/
      ```
 
 4. Download the **MovieLens 100k dataset** and place it in the `dataset/movielens-100k/` directory.
+   [You can use any other version of the MovieLens dataset you want. MovieLens-32M has been added but not used since model is too heavy to be deploy.]
 
 ---
 
@@ -152,18 +169,7 @@ python evaluate.py
 
 ## Deployment
 
-The application is deployed using Streamlit and is available at [movierecommender.streamlit.app](https://movierecommender.streamlit.app).
-
-To deploy locally using Streamlit:
-
-1. Install Streamlit:
-   ```bash
-   pip install streamlit
-   ```
-2. Run the Streamlit app:
-   ```bash
-   streamlit run app.py
-   ```
+The application is deployed using Render and is available at [movierecommendation-system.onrender.com]([https://movierecommender.streamlit.app](https://movierecommendation-system.onrender.com/)).
 
 ---
 
@@ -221,8 +227,8 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 
 ## Acknowledgments
 
-- **MovieLens Dataset** for providing the dataset.
-- **Streamlit** for deployment.
+- **MovieLens.org** for providing the dataset.
+- **Render** for deployment.
 
 ---
 
