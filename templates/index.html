@@ -114,7 +114,8 @@
                 const listItem = document.createElement('li');
                 listItem.innerHTML = `
                     <strong>${movie.title}</strong> (Rating: ${movie.predicted_rating.toFixed(2)})<br>
-                    <em>Genres: ${movie.genres}</em>
+                    <em>Genres: ${movie.genres}</em><br>
+                    <i>TMDB Link: ${movie.tmdb_link}</i>
                 `;
                 recommendationList.appendChild(listItem);
             });
